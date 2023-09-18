@@ -1,0 +1,73 @@
+%!TEX root = ../../main.tex
+
+\chapter{Introduction}
+\label{chap:intr}
+\section{Motivation}
+
+The process of preparing data to be quickly retrieved at a later time, usually referred to as \textit{indexing} exists in many forms - one of them is spatial indexing.\\
+Again, there are different concepts behind this term, however here the focus lies on indices for two-dimensional points to later be retrieved through \acs{BBox}\footnote{The term \acl{BBox} in this work refers to an axis-aligned rectangle used to specify an area of interest.} queries.\\
+For example: An index with two points: Berlin, located at 52.518611°, 13.408333° and Ottawa, located at 45.424722°, -75.695°, latitude and longitude respectively - a query for all points contained within 50°-54°, 12°-15° would only return Berlin because Ottawa is outside of the specified area.\\
+The motivation for this work lies in comparing libraries that provide this functionality in regards to performance as to determine which is best under what circumstances and how to adjust circumstances to improve performance where possible.
+
+The entire source code of this work is available under \url{https://github.com/josias-mueller/letztestudienarbeit}.
+
+\section{Objectives}
+
+The following objectives should be met for all libraries and data structures taken into account:
+% weiss nich ob das hier so hingehört, siehe approach
+\begin{enumerate}
+    \setcounter{enumi}{0}
+    \item Determine the required size in memory under different circumstances, and especially how it scales with respect to element count and size
+\end{enumerate}
+\begin{addmargin}[25pt]{0pt}
+    Barring compression, it is fairly easy to determine how much size is necessary to save a set of elements in memory - \textit{element count} * \textit{element size}. Any memory above that is overhead required for the index itself. The lower the required memory is the more elements fit into memory.
+\end{addmargin}
+
+\begin{enumerate}
+    \setcounter{enumi}{1}
+    \item Determine the time to build the index under different circumstances, and especially how it scales with respect to element count and size
+\end{enumerate}
+\begin{addmargin}[25pt]{0pt}
+    Build time refers to the time it takes to go from a set of elements to an index structure that is ready to be queried.
+\end{addmargin}
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Determine the time to delete the index under different circumstances, and especially how it scales with respect to element count and size.
+\end{enumerate}
+\begin{addmargin}[25pt]{0pt}
+    Delete time refers to the time it takes for the environment to clean up the index, this is mostly freeing the allocated memory in this case.
+\end{addmargin}
+
+\begin{enumerate}
+    \setcounter{enumi}{2}
+    \item Determine the time to carry out queries under different circumstances, and especially how the query performance scales with the number of elements in the index, their size and how many elements are included within the query region.
+\end{enumerate}
+\begin{addmargin}[25pt]{0pt}
+    As the primary and most frequent operation the query performance is by far the most important metric, as the frequency of this operation is so high comparably it may very well be time-efficient to accept longer build times to achieve better query performance.
+\end{addmargin}
+
+\section{Related Work}
+
+% ## srces
+
+% HPRTree general
+% https://drum.lib.umd.edu/handle/1903/5366
+A roughly related work\cite{hprtree1999} introduces the \acs{HRTree} as an improved \acs{RTree} / \textit{R*Tree}.
+
+% http://hdl.handle.net/1903/5366
+Another roughly related work\cite{Beckmann1990} presents \textit{R*Trees} conceptually and carries out benchmarks that suggest, that \textit{R*Trees} are generally better than \acsp{QTree} and \textit{Greene's \acsp{RTree}}.
+
+% STRTree general
+% https://ieeexplore.ieee.org/abstract/document/582015
+A different related work\cite{str1997} compares different packing algorithms for \acsp{RTree} - also making references to Hilbert curve based packing used in \acsp{HPRTree}. It concludes that none of the considered packing methods is optimal for all datasets.
+
+% QTree, RTree in oracle spatial
+% https://dl.acm.org/doi/abs/10.1145/564691.564755
+There is another related work\cite{indexoracle} which compares \acs{QTree} and \acs{RTree} index implementations for the spatial Oracle database. In the used benchmarks the \acsp{RTree} consistently outperform the \acsp{QTree}.
+
+% http://postgis.net/workshops/postgis-intro/indexing.html
+\textit{PostGIS}, a \textit{Postgres} database extension, enabling  it do perform \acs{GIS}-operations has documentation\cite{pgisindex} on the internally used spatial index (this is also an \acs{RTree}).
+
+% https://mapscaping.com/an-introduction-to-spatial-indexing/
+A further related work\cite{mapscaping} is an online resource providing an overview regarding different spatial indexing techniques, their strengths and weaknesses. This one does not have a reference to \acsp{HRTree} or \acsp{HPRTree} though.

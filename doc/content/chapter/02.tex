@@ -1,0 +1,42 @@
+%!TEX root = ../../main.tex
+
+\chapter{Foundations}
+\label{chap:fund}
+
+\section{Relevant Terminology}
+
+Unless otherwise noted these definitions are used:
+
+\paragraph[Float]{\textit{Float} refers to a 4 byte floating point number type as defined in IEEE 754-2008 (\textit{binary32}).}
+\paragraph[Point]{\textit{Point} refers to an object consisting of two floats, representing two coordinates in some form of coordinate system.}
+\paragraph[Element]{\textit{Element} refers to an object consisting of a point plus optional data.}
+\paragraph[Tree]{\textit{Tree} refers to a hierarchical data structure composed of connected nodes.}
+
+\section{Tools and Libraries}
+
+The following is a selection of the most useful tools and libraries that are used in this work.
+
+\subsection{Leaflet}
+\label{subs:leaflet}
+
+Leaflet\cite{leaflet} is a JavaScript library that can be used to create maps. In this work it is used to create visualisations for the different datasets.
+
+\subsection{GeoJSON}
+\label{subs:geojson}
+
+GeoJSON\cite{geojson:2016} is a JSON\cite{json:2017} based format for coordinate based data. In this work it is used to format some data to generate visualisations with leaflet (see \autoref{subs:leaflet}).
+
+\subsection{Rust}
+\label{subs:rust}
+
+Rust\cite{rust:2023} is a programming language that enables low level control of a program while still being ergonomic to write. In this work it is used for the main benchmarking as it provides great performance and sufficient control over (de)allocation and general execution to adequately measure it.
+
+\subsection{Python}
+\label{subs:python}
+
+Python\cite{python:2023} is useful because of its plethora of very useful libraries. In this work it is utilised for some of the data generation and for all visualisations, barring the ones generated with \textit{Leaflet} (see \autoref{subs:leaflet}).
+
+\subsection{Matplotlib}
+\label{subs:matplotlib}
+
+Matplotlib\cite{matplot:2023} is the most used Python library in this work. It is used to generate all of the data plots.

@@ -1,0 +1,21 @@
+%!TEX root = ../../main.tex
+
+\chapter{Conclusion and Outlook}
+\label{chap:conc}
+\section{Summary}
+
+%900 lines of python and 2.2k lines of rust later...
+
+In conclusion, the \acs{HPRTree} always builds and deletes faster for the tested datasets in addition to being smaller / more space efficient, but it lacks in query performance in all but very few of the tested datasets (and for the queries that remove all items, but there is little point in using a spatial index for such a task). The former was expected, the latter was not, which may warrant future investigation.
+
+\section{Next Steps} 
+
+Executing the benchmarks takes a long time, this should probably be remedied.
+
+The behaviour / measurments of the query benchmarks was unexpected and should be investigated further - the expectation was that the cache locality that the \acs{HPRTree} provides would make querying a lot faster than the pointer chasing necessary for the \textit{R*Tree}.
+
+Another deeper look into the generated data generally seems sensible as only a portion could be taken into account for this work.
+
+There are several parts of the code that are not well aligned where the one side does more work than necessary and the other has to do extra work to undo it again.
+
+To build on this work, it would make sense to extend the benchmarks to other libraries and to include more variables (like the parameters of the indices). Some of the datasets presented are a bit redundant as they display the same performance characteristics as others - removing those would result in lower time requirements to carry out the benchmarks and to do the analysis of the resulting data.

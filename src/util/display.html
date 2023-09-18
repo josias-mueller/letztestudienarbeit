@@ -1,0 +1,72 @@
+<!--ChatGPT Generated-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoJSON Visualization</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+  <style>
+    body {
+      background-color: black;
+      margin: 0;
+    }
+    
+    #map-container {
+      width: 100vw;
+      height: 100vh;
+      background-color: black; /* Set map background color */
+    }
+  </style>
+</head>
+<body>
+  <input type="file" id="fileInput">
+  <input type="color" id="colorPicker" value="#FF0000">
+  <div id="map-container"></div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const colorPicker = document.getElementById('colorPicker');
+    const mapContainer = document.getElementById('map-container');
+    let map;
+
+    fileInput.addEventListener('change', async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const text = await file.text();
+        const geojson = JSON.parse(text);
+        const pointColor = colorPicker.value;
+
+        const geojsonLayer = L.geoJSON(geojson, {
+          pointToLayer: (feature, latlng) => {
+            return L.circleMarker(latlng, {
+              radius: 1, // Adjust the radius for smaller dots
+              fillColor: pointColor,
+              fillOpacity: 1,
+              color: 'transparent',
+              weight: 0
+            });
+          }
+        });
+
+        if (!map) {
+          map = L.map(mapContainer).setView([0, 0], 2);
+          //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map); // Add a tile layer for the map background
+        }
+
+        geojsonLayer.addTo(map);
+      }
+    });
+
+    colorPicker.addEventListener('input', () => {
+      const pointColor = colorPicker.value;
+      const activeLayer = map?.getLayers()[0];
+
+      if (activeLayer) {
+        activeLayer.setStyle({ fillColor: pointColor });
+      }
+    });
+  </script>
+</body>
+</html>

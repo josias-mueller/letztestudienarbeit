@@ -1,0 +1,302 @@
+%!TEX root = ../../main.tex
+
+\chapter{Evaluation}
+\label{chap:eval}
+
+In this chapter, the results of the benchmarks are presented.
+
+\section{General Remarks}
+
+The benchmarks concluded after 44 hours of continuous runtime, resulting in about 5.4GiB of data.% (the exact resulting dataset can be retrieved at \url{https://github.com/josias-mueller/letztestudienarbeit\_result}).\\
+% github limits filesize to 100mb :c
+
+For visual consistency, the colours will remain the same for all visualisations: Green elements reflect the behaviour of the \textit{HPRTrees} and orange elements reflect that of the \textit{R*Trees}. All values are rounded - how much depends on  the value range but values that are being compared with one another are always rounded the same way.  %The x-axes are not of relevance beyond making room to display multiple datasets in the same graph.
+
+\section{Metrics}
+
+The benchmarks collected data on the following metrics:
+
+\subsection{Size in Memory}
+
+Several interesting observations can be made in relation to the indices size in memory. \autoref{fig:sizeallb} shows the size in memory of all datasets together with the theoretical minimum. In this graph it looks like the \acs{HPRTree} was smaller for all datasets. The \textit{R*Tree} even failed to build for several datasets - this is visualised through datapoints below the theoretical minimum. The main problem with this graph is that due to the wide range of dataset sizes, the lower end is near impossible to read.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{size/size_all_bytes}
+    \caption[Size of all datasets in memory in KiB.]{Size of all datasets in memory in KiB. If a datapoint is below the theoretical minimum, that means that it ran out of memory.}
+    \label{fig:sizeallb}
+\end{figure}
+
+\autoref{fig:sizeallp100} improves on this by presenting all values in percent of the theoretical minimum. This corroborates the previously made claims: The \acs{HPRTree} is always faster than its counterpart.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{size/size_all_p100}
+    \caption[Size of all datasets in memory in percent of theoretical minimum.]{Size of all datasets in memory in percent of theoretical minimum. If a datapoint is below the theoretical minimum, that means that it ran out of memory.}
+    \label{fig:sizeallp100}
+\end{figure}
+
+Looking at the numeric values, this can be concretised a bit more: The best efficiency\footnote{As the values are in percent of the theoretical minimum, the best possible efficiency is 100\%, the higher the value the worse the overhead.} the \acs{HPRTree} reached was circa 100.9 percent of the theoretical minimum, at worst it was circa 175.6 percent. The \textit{R*Tree} managed 124.1 percent at best and 459.4 percent at worst. In direct dataset-by-dataset comparison the \acs{HPRTree} required 38.2 percent of what the \textit{R*Tree} needed at best and 81.5 percent at worst.
+
+\autoref{fig:sizegrpdead} takes a closer look at the datasets that the \textit{R*Tree} could not handle with the given resources. Here it becomes clear that while the \textit{R*Tree} failed, the \acs{HPRTree} was near peak efficiency - this is probably because these are some of the biggest datasets, namely the synthetic datasets with a multiplier of 256 and element sizes of 256, 512 and 1024 and the synthetic dataset with a multiplier of 64 and an element size of 1024. Because the size requirement for the additional data scales logarithmically for the \acs{HPRTree}, the overhead becomes less noticably as the theoretical minimum grows.
+
+\begin{figure}[H]
+    \centering
+    \includesvg[width=\textwidth]{size/sizegrp_108.71876977991175}
+    \caption[Size of the datasets that the \textit{R*Tree} could not handle in memory in percent of theoretical minimum.]{Size of the datasets that the \textit{R*Tree} could not handle in memory in percent of theoretical minimum. If a datapoint is below the theoretical minimum, that means that it ran out of memory.}
+    \label{fig:sizegrpdead}
+\end{figure}
+
+\autoref{fig:sizegrprest} shows the rest of the datasets grouped by value ranges.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{size/sizegrp_144.24021663947218}
+        \caption[Datasets between 100 and 140 percent of the theoretical minimum.]{Datasets between 100 and 140 percent of the theoretical minimum.}
+        \label{sfig:sizegrp144}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{size/sizegrp_236.19757377979568}
+        \caption[Datasets between 140 and 220 percent of the theoretical minimum.]{Datasets between 140 and 220 percent of the theoretical minimum.}
+        \label{sfig:sizegrp240}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{size/sizegrp_425.9998842592593}
+        \caption[Datasets between 100 and 400 percent of the theoretical minimum.]{Datasets between 100 and 400 percent of the theoretical minimum.}
+        \label{sfig:sizegrp420}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{size/sizegrp_477.39514755959135}
+        \caption[Datasets between 140 and 450 percent of the theoretical minimum.]{Datasets between 140 and 450 percent of the theoretical minimum.}
+        \label{sfig:sizegrp480}
+    \end{subfigure}
+    \caption[Size of the other datasets in memory in percent of theoretical minimum.]{Size of the other datasets in memory in percent of theoretical minimum.}
+    \label{fig:sizegrprest}
+\end{figure}
+
+\subsection{Build Time}
+
+The data for build time looks similar: When compared to the build time of the \textit{R*Tree} the \acs{HPRTree} is at worst 1.8 times faster and at best 11.7 times faster. Again, there is not a single dataset where the \textit{R*Tree} beats the \acs{HPRTree}. This appears to be strongly correlated with the element size:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|l|l}
+        Element size & Difference at worst & Difference at best \\ \hline
+        12           & 1.8                 & 2.8                \\ \hline
+        24           & 1.9                 & 3.0                \\ \hline
+        256          & 3.3                 & 5.3                \\ \hline
+        512          & 4.1                 & 11.7               \\ \hline
+        1024         & 5.4                 & 10.2
+    \end{tabular}
+    \caption[Best and worst case factors for the build times.]{Best and worst case factors for the build times. Higher is better for the \acs{HPRTree}.}
+    \label{tab:buildmults}
+\end{table}
+
+The only reason why the difference at best is lower for the biggest element, is persumably that the datasets that would be even worse for the \textit{R*Tree} do not fit into memory. \autoref{fig:buildelem} shows plots for a selection of datasets with an element size of 12, they provide more detail than the range given in \autoref{tab:buildmults}.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/Element_16200_44692}
+        \caption[Build times for element counts between 16200 and 44692.]{Build times for element counts between 16200 and 44692.}
+        \label{sfig:buildelemsmall}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/Element_140974_259200}
+        \caption[Build times for element counts between 140974 and 259200.]{Build times for element counts between 140974 and 259200.}
+        \label{sfig:buildelemmedium}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/Element_3808651_4147200}
+        \caption[Build times for element counts between 3808651 and 4147200.]{Build times for element counts between 3808651 and 4147200.}
+        \label{sfig:buildelemlarge}
+    \end{subfigure}
+    \caption[A selection of build times for element size 12.]{A selection of build times for element size 12.}
+    \label{fig:buildelem}
+\end{figure}
+
+\autoref{fig:buildbiggerelem} shows plots for a selection of datasets with an element size of 24.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BiggerElement_16200_44692}
+        \caption[Build times for element counts between 16200 and 44692.]{Build times for element counts between 16200 and 44692.}
+        \label{sfig:buildbiggerelemsmall}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BiggerElement_140974_259200}
+        \caption[Build times for element counts between 140974 and 259200.]{Build times for element counts between 140974 and 259200.}
+        \label{sfig:buildbiggerelemmedium}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BiggerElement_3808651_4147200}
+        \caption[Build times for element counts between 3808651 and 4147200.]{Build times for element counts between 3808651 and 4147200.}
+        \label{sfig:buildbiggerelemlarge}
+    \end{subfigure}
+    \caption[A selection of build times for element size 24.]{A selection of build times for element size 24.}
+    \label{fig:buildbiggerelem}
+\end{figure}
+
+\autoref{fig:buildbigelem} shows plots for a selection of datasets with an element size of 256.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BigElement_16200_44692}
+        \caption[Build times for element counts between 16200 and 44692.]{Build times for element counts between 16200 and 44692.}
+        \label{sfig:buildbigelemsmall}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BigElement_140974_259200}
+        \caption[Build times for element counts between 140974 and 259200.]{Build times for element counts between 140974 and 259200.}
+        \label{sfig:buildbigelemmedium}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/BigElement_3808651_4147200}
+        \caption[Build times for element counts between 3808651 and 4147200.]{Build times for element counts between 3808651 and 4147200.}
+        \label{sfig:buildbigelemlarge}
+    \end{subfigure}
+    \caption[A selection of build times for element size 256.]{A selection of build times for element size 256.}
+    \label{fig:buildbigelem}
+\end{figure}
+
+\autoref{fig:buildvbigelem} shows plots for a selection of datasets with an element size of 512.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryBigElement_16200_44692}
+        \caption[Build times for element counts between 16200 and 44692.]{Build times for element counts between 16200 and 44692.}
+        \label{sfig:buildvbigelemsmall}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryBigElement_140974_259200}
+        \caption[Build times for element counts between 140974 and 259200.]{Build times for element counts between 140974 and 259200.}
+        \label{sfig:buildvbigelemmedium}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryBigElement_3808651_4147200}
+        \caption[Build times for element counts between 3808651 and 4147200.]{Build times for element counts between 3808651 and 4147200.}
+        \label{sfig:buildvbigelemlarge}
+    \end{subfigure}
+    \caption[A selection of build times for element size 512.]{A selection of build times for element size 512.}
+    \label{fig:buildvbigelem}
+\end{figure}
+
+And finally, \autoref{fig:buildvvbigelem} shows plots for a selection of datasets with an element size of 1024.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryVeryBigElement_16200_44692}
+        \caption[Build times for element counts between 16200 and 44692.]{Build times for element counts between 16200 and 44692.}
+        \label{sfig:buildvvbigelemsmall}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryVeryBigElement_140974_259200}
+        \caption[Build times for element counts between 140974 and 259200.]{Build times for element counts between 140974 and 259200.}
+        \label{sfig:buildvvbigelemmedium}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{build/VeryVeryBigElement_259200_1036800}
+        \caption[Build times for element counts between 259200 and 1036800.]{Build times for element counts between 259200 and 1036800.}
+        \label{sfig:buildvvbigelemlarge}
+    \end{subfigure}
+    \caption[A selection of build times for element size 1024.]{A selection of build times for element size 1024.}
+    \label{fig:buildvvbigelem}
+\end{figure}
+
+\subsection{Deletion Time}
+
+As deletion time is fairly tightly coupled with build time (or at least the allocation portion of it), it is no big suprise that the results here are similar to the build times'. The \acs{HPRTree} is better in every benchmark. It is always at least 1.9 times faster but this can go up to 72.9 times faster. However, different to how the build time behaved, these times seem to be more strongly correlated with the element count and not so much with the size of the individual elements as is shown in \autoref{tab:delmults}:
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{l|l|l}
+        Element count range     & Difference at worst & Difference at best \\ \hline
+        (16,200;44,692{]}       & 1.9                 & 6.9                \\ \hline
+        (44,692;64,800{]}       & 2.6                 & 13.8               \\ \hline
+        (64,800;140,974{]}      & 6.7                 & 17.6               \\ \hline
+        (140,974;259,200{]}     & 5.6                 & 15.0               \\ \hline
+        (259,200;1,036,800{]}   & 7.6                 & 34.8               \\ \hline
+        (1,036,800;3,808,651{]} & 9.6                 & 68.0               \\ \hline
+        (3,808,651;4,147,200{]} & 11.9                & 72.9
+    \end{tabular}
+    \caption[Best and worst case factors for the deletion times.]{Best and worst case factors for the deletion times. Higher is better for the \acs{HPRTree}.}
+    \label{tab:delmults}
+\end{table}
+
+\autoref{fig:del} shows plots for a selection of datasets with an element size of 24.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{delete/BiggerElement_64800_140974}
+        \caption[Deletion times for element counts between 64800 and 140974.]{Deletion times for element counts between 64800 and 140974.}
+        \label{sfig:delBiggerElement_64800_140974}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{delete/BiggerElement_259200_1036800}
+        \caption[Deletion times for element counts between 259200 and 1036800.]{Deletion times for element counts between 259200 and 1036800.}
+        \label{sfig:delBiggerElement_259200_1036800}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{delete/BiggerElement_3808651_4147200}
+        \caption[Deletion times for element counts between 3808651 and 4147200.]{Deletion times for element counts between 3808651 and 4147200.}
+        \label{sfig:delBiggerElement_3808651_4147200}
+    \end{subfigure}
+    \caption[A selection of deletion times for elements with a size of 24 bytes.]{A selection of deletion times for elements with a size of 24 bytes.}
+    \label{fig:del}
+\end{figure}
+
+\subsection{Query All Time}
+
+Retrieving all elements from the indices is the first metric where \acs{HPRTree} does not win everything across the board. It is still ahead in 91\% of datasets, but in the worst case it is 20\% slower than the \textit{R*Tree}. In the best case it is still about 3.2 times faster than the \textit{R*Tree}. The \acs{HPRTree} beats the \textit{R*Tree} in all datasets with element size 12, 256, 512, all but one with element size 1024 and in about half of element size 24. There appears to be a slight trend where the greater the element count gets, the better the \acs{HPRTree} performs, and the reverse seems to be true with element size. The smaller each element gets the better the \acs{HPRTree} appears to perform. The trend makes sense, however what is quite odd is how the \textit{R*Tree} just wins for some datasets without a trend that would be immediately obvious. A selection of these datasets can be seen in \autoref{fig:qall}.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{queryall/BigElement_16200_44692}
+        \caption[Query all times for element counts between 16200 and 44692.]{Query all times for element counts between 16200 and 44692.}
+        \label{sfig:qalla}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{queryall/BiggerElement_16200_44692}
+        \caption[Query all times for element counts between 16200 and 44692.]{Query all times for element counts between 16200 and 44692.}
+        \label{sfig:qallb}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{queryall/BigElement_140974_259200}
+        \caption[Query all times for element counts between 140974 and 259200.]{Query all times for element counts between 140974 and 259200.}
+        \label{sfig:qallc}
+    \end{subfigure}
+    \caption[A selection of query all times.]{A selection of query all times.}
+    \label{fig:qall}
+\end{figure}
+
+\subsection{Prepared Query Time}
+
+Overall, the \acs{HPRTree} is slower in about 70\% of datasets and sometimes by quite a bit too - at worst the \acs{HPRTree} is about 99.8\% slower than the \textit{R*Tree}. In this case that is 26.6ms versus 0.06ms - this is for the second fully random dataset with 3,808,651 elements and an element size of 1024. Even at best the \acs{HPRTree} is \textit{only} about 4.3 times faster than the \textit{R*Tree}. The only datasets where the \acs{HPRTree} consistently outperforms its competitor here are the first\cite{simplemaps} and second\cite{opendata} real datasets - the third dataset is about even between the two.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{querypre/BigElement_16200_44692-16}
+        \caption[]{}
+        \label{sfig:qprea}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{querypre/BigElement_16200_44692-4096}
+        \caption[]{}
+        \label{sfig:qpreb}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.458\textwidth}
+        \includesvg[width=\textwidth]{querypre/BigElement_140974_259200-16}
+        \caption[]{}
+        \label{sfig:qprec}
+    \end{subfigure}
+    \caption[A selection of prepared query times.]{A selection of prepared query times.}
+    \label{fig:qpre}
+\end{figure}

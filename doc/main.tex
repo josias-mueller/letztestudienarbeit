@@ -1,0 +1,112 @@
+% !TEX root = ./main.tex
+
+\input{settings/include}
+\input{settings/shorts}
+
+\begin{document}
+
+% \pagecolor[rgb]{0,0,0} %black
+% \color[rgb]{0.7,0.7,0.7} %grey
+
+\begin{spacing}{1}
+	\begin{titlepage}
+		\begin{longtable}{p{8cm} p{8cm}}
+			\raggedright {\raisebox{\ht\strutbox-\totalheight}{\includegraphics[height=1.8cm]{images/cover/logo-dhbw.pdf}}} &
+		\end{longtable}
+		\begin{center}
+			\doublespacing{
+			\vspace*{12mm}	{\LARGE\textbf \documentTitle }}\\
+			\vspace*{12mm}	{\large\textbf {Semester Paper}}\\
+			\vspace*{12mm}	from the Course of Studies Informatik\\
+		\vspace*{0mm}		at the Cooperative State University Baden-Württemberg Heidenheim\\
+			\vspace*{12mm}	by\\
+			\vspace*{3mm}		{\large\textbf \documentAuthor}\\
+			\vspace*{12mm}	September 2023\\
+		\end{center}
+		\vfill
+		\begin{spacing}{1.2}
+		\begin{tabbing}
+			mmmmmmmmmmmmmmmmmmmmmmmmmm             \= \kill
+			\textbf{Time of Project}       \>  9 Weeks\\
+			\textbf{Student ID, Course}  \>  4030578, TINF2020AI\\
+			\textbf{Reviewer}               \>  Prof. Dr. -Ing. Sabine Berninger\\
+		\end{tabbing}
+		\end{spacing}
+	\end{titlepage}	
+\end{spacing}
+\newpage
+
+\pagenumbering{Roman}
+
+\thispagestyle{empty}
+\section*{Author's declaration}
+\vspace*{2em}
+Hereby I solemnly declare:
+\begin{enumerate}
+	\item that this Semester Paper, titled {\itshape \documentTitle } is entirely the product of my own scholarly work, unless otherwise indicated in the text or references, or acknowledged below;
+	\item I have indicated the thoughts adopted directly or indirectly from other sources at the appropriate places within the document;
+	\item this Semester Paper has not been submitted either in whole or part, for a degree at this or any other university or institution;
+	\item I have not published this Semester Paper in the past;
+\end{enumerate}
+I am aware that a dishonest declaration will entail legal consequences.
+
+\vspace{3em}
+Heidenheim, September 2023
+
+\vspace{4em}
+\rule{6cm}{0.4pt}\\
+\documentAuthor
+
+\newpage
+
+\input{content/abstract}
+\newpage
+
+\pagestyle{plain}
+
+\RedeclareSectionCommand[beforeskip=\chapterMargin]{chapter}
+
+\begin{spacing}{1.1}
+	\begingroup
+
+	\setcounter{tocdepth}{1}
+
+	\tableofcontents
+	\clearpage
+	\endgroup
+\end{spacing}
+\newpage
+
+\cleardoublepage
+\input{content/acronyms}
+
+\cleardoublepage
+\listoffigures
+
+\cleardoublepage
+\lstlistoflistings
+\cleardoublepage
+
+\pagenumbering{arabic}
+
+\pagestyle{headings}
+
+\foreach \i in {01,02,03,04,05,06,07} {%
+		\edef\FileName{content/chapter/\i .tex}%
+		\IfFileExists{\FileName}{%
+			\input{\FileName}
+		}
+		{%
+		}
+	}
+
+\clearpage
+
+\printbibliography
+
+% \clearpage
+
+% \appendix
+% \input{content/appendix.tex}
+
+\end{document}

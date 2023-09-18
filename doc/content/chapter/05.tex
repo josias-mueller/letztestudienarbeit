@@ -1,0 +1,21 @@
+%!TEX root = ../../main.tex
+\chapter{Discussion}
+\label{chap:disc}
+
+The benchmarks were carried out on a Windows computer with 64GB of 3200MHz DDR4 Memory on two channels and a Ryzen 7 3700X (8x4.2GHz) Processor with no other resource intensive programs running. The presented numbers will vary depending on the hardware they are generated on, but the expectation is that on similar hardware at the very least the relation between the numbers remains similar.\\
+
+Due to time constraints, the benchmarks were limited in execution time. This has resulted in a low sample size for the slower operations. This is problematic for determining statistical significance, but considering how far apart the values are and how tight the spread is this should not matter.\\
+
+Another limitation due to time constraints is the selection of libraries and indices, of which there are only two. However, the two that are included provide a good starting point: The \textit{R*Tree} as the default choice for this type of work and the \acs{HPRTree} as an optimisation promising near perfect space-utilisation and good locality.\\
+
+In addition the this, the libraries that were used can be configured to different degrees - these are further variables that were discarded / left at their default setting due to time constraints.\\
+
+It would have been interesting to visualize and compare the internal structures of the indices, however this was also not possible due to time constraints.\\
+
+As everything in the benchmarks was implemented in Rust, which is quite different from the current \textit{default languages}\footnote{Consider this an anecdote and not a fact, determining a global / general default is very difficult and opinion and environment based.} for the types of backend services where this type of mechanism would usually be implemented in, like \textit{Kotlin} or \textit{GO}. These, usually garbage-collected languages behave quite a bit different than \textit{Rust} does. In the beginning this work included comparisons with Java-equivalents of the presented libraries, but since they were difficult to accurately measure and their performance was so abysmal in comparison anyway - they were cut. The author heavily suggests using a language that can provide performance in a high throughput environment if performance matters (and if one is already looking into what datastructure is most efficient / fast - it probably does).\\
+
+Initially, a mechanism to visualise the regions of the prepared queries was started to be implemented, but this was also cut due to time constraints.\\
+
+Only an excerpt of the 5.4GiB of data was presented in this work as going through everything in detail is not feasible within the given time frame.\\
+
+The query responses are only primitively validated. Both types of queries only check that the number of returned elements is correct. Theoretically, it is possible that the two indices do not even return the same results. At this time the author relies on the implementation / testing of the library maintainers.

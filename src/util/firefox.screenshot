@@ -1,0 +1,1 @@
+:screenshot --selector ".leaflet-overlay-pane > svg > g"
